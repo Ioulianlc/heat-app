@@ -1,0 +1,60 @@
+.page {
+  display: grid;
+  gap: 32px;
+  min-height: 100dvh;
+  padding: var(--page-margin);
+  align-content: start;
+  background: var(--color-maroon) url('./assets/pattern.png') center / cover;
+}
+
+.logo {
+  color: var(--color-yellow);
+}
+
+.panel {
+  display: grid;
+  gap: var(--grid-gap);
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--color-white);
+  color: var(--color-ink);
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+}
+
+.swatches > p {
+  margin: 0;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.yellow {
+  background: var(--color-yellow);
+  color: var(--on-yellow);
+}
+
+.pink {
+  background: var(--color-pink);
+  color: var(--on-pink);
+}
+
+.red {
+  background: var(--color-red);
+  color: var(--on-red);
+}
+
+.maroon {
+  background: var(--color-maroon);
+  color: var(--on-maroon);
+}
+
+.icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--color-red);
+}

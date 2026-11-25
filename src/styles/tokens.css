@@ -1,0 +1,62 @@
+/* La charte HEAT, en variables CSS. Une couleur à changer ? C'est ici, et nulle part ailleurs. */
+:root {
+  /* Palette principale */
+  --color-yellow: #ffc502; /* Golden Poppy */
+  --color-pink: #f094e1; /* Pink Sparkle */
+  --color-red: #c20a20; /* Smooth Red */
+  --color-maroon: #43150c; /* Strong Maroon */
+  --color-ink: #0c0800; /* le noir des textes de la charte */
+  --color-white: #ffffff;
+
+  /* Nuancier */
+  --accent-100: #f8def3;
+  --accent-300: #f094e1;
+  --accent-500: #c20a20;
+  --accent-700: #7e0715;
+  --accent-900: #57050e;
+  --mono-100: #1e0000;
+  --mono-300: #6f7071;
+  --mono-500: #b3b2b0;
+  --mono-700: #f9f5f1; /* à confirmer : la charte affiche #F2F2F2 */
+  --mono-900: #ffffff;
+
+  /* Couleur de texte lisible sur chaque fond (contraste >= 4,5) */
+  --on-yellow: var(--color-ink);
+  --on-pink: var(--color-ink);
+  --on-red: var(--color-white);
+  --on-maroon: var(--color-white);
+
+  /* Polices */
+  --font-title: 'Red Hat Display Variable', system-ui, sans-serif;
+  --font-body: 'Bebas Neue', 'Arial Narrow', sans-serif;
+
+  /* Tailles (charte : H1 67, H2 43, H3 34, H4 27, H5 22, H6 18, texte 16).
+     clamp(min, idéal, max) : le max est la taille de la charte, réduite sur téléphone. */
+  --text-h1: clamp(3rem, 2.2rem + 4vw, 4.1875rem);
+  --text-h2: clamp(2.125rem, 1.7rem + 2vw, 2.6875rem);
+  --text-h3: clamp(1.75rem, 1.5rem + 1.2vw, 2.125rem);
+  --text-h4: clamp(1.5rem, 1.35rem + 0.7vw, 1.6875rem);
+  --text-h5: 1.375rem;
+  --text-h6: 1.125rem;
+  --text-body: 1rem;
+  --line-height: 1.2;
+
+  /* Grille : téléphone */
+  --page-margin: 16px;
+  --grid-gap: 8px;
+}
+
+/* Grille : tablette */
+@media (min-width: 512px) {
+  :root {
+    --page-margin: 32px;
+    --grid-gap: 16px;
+  }
+}
+
+/* Grille : ordinateur (seuil à confirmer, la charte ne le donne pas) */
+@media (min-width: 1024px) {
+  :root {
+    --page-margin: 48px;
+  }
+}
