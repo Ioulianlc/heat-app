@@ -1,0 +1,35 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 6px 16px;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--color-wine);
+  font-family: var(--font-title);
+  font-size: var(--text-label);
+  letter-spacing: -0.02em;
+  line-height: var(--line-height);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.light {
+  background: var(--color-white);
+}
+
+.primary {
+  background: var(--color-yellow);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button svg {
+  flex: none;
+}

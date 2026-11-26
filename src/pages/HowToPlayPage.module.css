@@ -1,0 +1,40 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.block h2 {
+  font-size: var(--text-label);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.warning h2 {
+  color: var(--color-yellow);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.traps {
+  margin: 0;
+}
+
+.traps dt {
+  margin-top: 8px;
+  color: var(--color-yellow);
+  font-weight: 700;
+}
+
+.traps dd {
+  margin: 0;
+}

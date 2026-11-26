@@ -1,0 +1,14 @@
+.header {
+  display: grid;
+  grid-template-columns: var(--icon-button) 1fr var(--icon-button);
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  text-align: center;
+}
+
+.spacer {
+  width: var(--icon-button);
+}

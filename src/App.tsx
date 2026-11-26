@@ -1,73 +1,79 @@
-import { useEffect, useState } from 'react'
-import styles from './App.module.css'
-import Icon from './components/Icon'
-import { iconPaths, type IconName } from './components/icons'
-import Logo from './components/Logo'
-import { fetchCards } from './lib/cards'
-import type { Card } from './types/card'
+import { useCallback, useEffect, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router'
+import { ProfileContext } from './account/profileContext'
+import { Button } from './components/Button'
+import Screen from './components/Screen'
+import { readableError } from './lib/errors'
+import { getCurrentProfile, type Profile } from './lib/profile'
+import HomePage from './pages/HomePage'
+import HowToPlayPage from './pages/HowToPlayPage'
+import NewGamePage from './pages/NewGamePage'
+import PortalPage from './pages/PortalPage'
+import ProfilePage from './pages/ProfilePage'
 
-const iconNames = Object.keys(iconPaths) as IconName[]
+// Les 4 états possibles du compte au lancement de l'app
+type AccountState =
+  | { status: 'loading' }
+  | { status: 'missing' } // personne inscrit sur ce téléphone : on montre le portail
+  | { status: 'ready'; profile: Profile }
+  | { status: 'error'; message: string }
 
-// Page de contrôle (connexion + charte), remplacée quand les maquettes arriveront
 function App() {
-  const [cards, setCards] = useState<Card[]>([])
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [message, setMessage] = useState('')
+  const [account, setAccount] = useState<AccountState>({ status: 'loading' })
 
-  // [] = une seule fois, à l'affichage de la page
-  useEffect(() => {
-    fetchCards()
-      .then((loaded) => {
-        setCards(loaded)
-        setStatus('ready')
-      })
-      .catch((error: { message: string }) => {
-        setMessage(error.message)
-        setStatus('error')
-      })
+  const loadAccount = useCallback(() => {
+    getCurrentProfile()
+      .then((profile) =>
+        setAccount(profile ? { status: 'ready', profile } : { status: 'missing' }),
+      )
+      .catch((caught: unknown) => setAccount({ status: 'error', message: readableError(caught) }))
   }, [])
 
+  useEffect(loadAccount, [loadAccount])
+
+  if (account.status === 'loading') {
+    return (
+      <Screen>
+        <p>Loading…</p>
+      </Screen>
+    )
+  }
+
+  if (account.status === 'error') {
+    return (
+      <Screen
+        footer={
+          <Button
+            variant="primary"
+            onClick={() => {
+              setAccount({ status: 'loading' })
+              loadAccount()
+            }}
+          >
+            Try again
+          </Button>
+        }
+      >
+        <p role="alert">{account.message}</p>
+      </Screen>
+    )
+  }
+
+  if (account.status === 'missing') {
+    return <PortalPage onCreated={(profile) => setAccount({ status: 'ready', profile })} />
+  }
+
+  // Compte prêt : chaque adresse affiche son écran
   return (
-    <main className={styles.page}>
-      <h1 className={styles.logo}>
-        <Logo />
-      </h1>
-
-      <section className={styles.panel}>
-        <h2>Cards</h2>
-        {status === 'loading' && <p>Loading cards...</p>}
-        {status === 'error' && <p role="alert">Error: {message}</p>}
-        {status === 'ready' && (
-          <>
-            <p>Cards loaded: {cards.length}</p>
-            <ul>
-              {cards.map((card) => (
-                <li key={card.id}>{card.question}</li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
-
-      <section className={styles.panel}>
-        <h2>Colors</h2>
-        <div className={styles.swatches}>
-          <p className={styles.yellow}>Golden Poppy</p>
-          <p className={styles.pink}>Pink Sparkle</p>
-          <p className={styles.red}>Smooth Red</p>
-          <p className={styles.maroon}>Strong Maroon</p>
-        </div>
-      </section>
-
-      <section className={styles.panel}>
-        <h2>Icons</h2>
-        <div className={styles.icons}>
-          {iconNames.map((name) => (
-            <Icon key={name} name={name} size={40} />
-          ))}
-        </div>
-      </section>
-    </main>
+    <ProfileContext value={account.profile}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/how-to-play" element={<HowToPlayPage />} />
+        <Route path="/new" element={<NewGamePage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </ProfileContext>
   )
 }
 

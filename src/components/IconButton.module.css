@@ -1,0 +1,21 @@
+.iconButton {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--icon-button);
+  height: var(--icon-button);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-strong);
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+/* Zone de toucher agrandie à 47 px, sans changer le dessin */
+.iconButton::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}

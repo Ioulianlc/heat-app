@@ -1,0 +1,38 @@
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* Le fond reste fixe pendant le défilement, y compris sur iPhone */
+.screen::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgb(87 5 14 / 0.5), rgb(87 5 14 / 0.5)),
+    url('../assets/pattern.png') center / cover,
+    var(--color-maroon);
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--page-top) var(--page-x) 24px;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 12px var(--page-x) max(32px, env(safe-area-inset-bottom));
+}
