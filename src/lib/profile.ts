@@ -1,3 +1,5 @@
+import { isOffline } from './errors'
+import { readJson, removeKey, writeJson } from './storage'
 import { supabase } from './supabase'
 
 export type Profile = {
@@ -7,16 +9,33 @@ export type Profile = {
 
 export const NAME_MAX_LENGTH = 20 // même limite que dans la base
 
-// Le profil de ce téléphone, ou null si personne ne s'est encore inscrit ici
-export async function getCurrentProfile(): Promise<Profile | null> {
-  const { data, error } = await supabase.auth.getSession()
-  if (error) throw error
-  if (!data.session) return null
+const PROFILE_KEY = 'heat.profile' // copie du profil sur le téléphone, pour s'ouvrir hors ligne
 
-  // La règle RLS ne renvoie que la ligne de ce compte
-  const result = await supabase.from('profiles').select('id, name').maybeSingle()
-  if (result.error) throw result.error
-  return result.data
+// Le profil de ce téléphone, ou null si personne ne s'est encore inscrit ici.
+// Hors ligne : la copie gardée sur le téléphone.
+export async function getCurrentProfile(): Promise<Profile | null> {
+  try {
+    const { data, error } = await supabase.auth.getSession()
+    if (error) throw error
+    if (!data.session) {
+      removeKey(PROFILE_KEY)
+      return null
+    }
+
+    // La règle RLS ne renvoie que la ligne de ce compte
+    const result = await supabase
+      .from('profiles')
+      .select('id, name')
+      .abortSignal(AbortSignal.timeout(6000))
+      .maybeSingle()
+    if (result.error) throw result.error
+    if (result.data) writeJson(PROFILE_KEY, result.data)
+    return result.data
+  } catch (error) {
+    const saved = readJson<Profile>(PROFILE_KEY)
+    if (saved && isOffline(error)) return saved
+    throw error
+  }
 }
 
 // Crée le compte anonyme (une seule fois par téléphone), puis le profil avec le nom
@@ -39,5 +58,6 @@ export async function createProfile(name: string): Promise<Profile> {
     if (existing) return existing
   }
   if (result.error) throw result.error
+  writeJson(PROFILE_KEY, result.data)
   return result.data
 }

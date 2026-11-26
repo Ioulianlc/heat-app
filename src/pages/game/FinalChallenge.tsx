@@ -8,7 +8,9 @@ import { answerOrder } from '../../game/deck'
 import { FINAL_SAUCE } from '../../game/rules'
 import type { Letter, Player } from '../../game/types'
 import { answerText } from '../../lib/cards'
-import { canSpeak, speak, stopSpeaking } from '../../lib/speech'
+import { vibrate } from '../../lib/feedback'
+import { getPreferences } from '../../lib/preferences'
+import { canSpeak, readAloud, speak, stopSpeaking } from '../../lib/speech'
 import type { Card } from '../../types/card'
 import GameCard from './GameCard'
 import GameHeader from './GameHeader'
@@ -38,24 +40,36 @@ function FinalChallenge({ gameId, player, drawn, timerSeconds, onDone }: FinalCh
   const [step, setStep] = useState<Step>({ step: 'intro' })
   const [answers, setAnswers] = useState<(Letter | null)[]>([]) // les réponses déjà données
 
-  // Chaque question a son propre timer, lancé dès qu'elle s'affiche
-  const nextQuestion = (): Step => ({
-    step: 'answer',
-    picked: null,
-    deadline: Date.now() + timerSeconds * 1000,
-  })
+  // Les 5 questions d'affilée, et pour chaque question à répondre : « Question N » + ses réponses
+  const allQuestions = drawn
+    .map((entry, index) => `Question ${index + 1}. ${entry.card.question}`)
+    .join(' ')
+  function answersToRead(number: number) {
+    const { card, index } = drawn[number]
+    const answers = answerOrder(gameId, index).map(
+      (letter, position) => `${position + 1}: ${answerText(card, letter)}.`,
+    )
+    return `Question ${number + 1}. ${answers.join(' ')}`
+  }
+
+  // Chaque question a son propre timer, lancé dès qu'elle s'affiche.
+  // Préférence « Voice over » : ses réponses sont lues tout de suite.
+  function startQuestion(number: number) {
+    setStep({ step: 'answer', picked: null, deadline: Date.now() + timerSeconds * 1000 })
+    if (getPreferences().voiceOver) readAloud(answersToRead(number))
+  }
 
   function submit(timedOut: boolean) {
     if (step.step !== 'answer') return
     stopSpeaking()
-    if (timedOut) navigator.vibrate?.(200)
+    if (timedOut) vibrate(200)
     const all = [...answers, step.picked]
     if (all.length === drawn.length) {
       onDone({ declined: false, picked: all })
       return
     }
     setAnswers(all)
-    setStep(nextQuestion())
+    startQuestion(all.length)
   }
 
   // Même principe que pendant un tour : réponse touchée = question suivante, fin du timer = sans réponse
@@ -81,7 +95,10 @@ function FinalChallenge({ gameId, player, drawn, timerSeconds, onDone }: FinalCh
                   <Icon name="chili" size={26} />
                 </span>
               }
-              onClick={() => setStep({ step: 'read' })}
+              onClick={() => {
+                setStep({ step: 'read' })
+                if (getPreferences().voiceOver) readAloud(allQuestions)
+              }}
             >
               Sauce taken
             </Button>
@@ -115,9 +132,6 @@ function FinalChallenge({ gameId, player, drawn, timerSeconds, onDone }: FinalCh
   }
 
   if (step.step === 'read') {
-    const allQuestions = drawn
-      .map((entry, index) => `Question ${index + 1}. ${entry.card.question}`)
-      .join(' ')
     return (
       <Screen
         tight
@@ -126,7 +140,7 @@ function FinalChallenge({ gameId, player, drawn, timerSeconds, onDone }: FinalCh
             icon={<UiIcon name="skull" />}
             onClick={() => {
               stopSpeaking()
-              setStep(nextQuestion())
+              startQuestion(0)
             }}
           >
             Answer the questions
@@ -158,9 +172,7 @@ function FinalChallenge({ gameId, player, drawn, timerSeconds, onDone }: FinalCh
   const number = answers.length
   const current = drawn[number]
   const order = answerOrder(gameId, current.index)
-  const textToRead = `Question ${number + 1}. ${order
-    .map((letter, index) => `${index + 1}: ${answerText(current.card, letter)}.`)
-    .join(' ')}`
+  const textToRead = answersToRead(number)
 
   return (
     <Screen tight>

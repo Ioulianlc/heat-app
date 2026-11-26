@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useParams } from 'react-router'
 import { Button } from '../../components/Button'
 import Icon from '../../components/Icon'
@@ -17,8 +17,11 @@ import {
 import type { Bet, FinalTurn, GameState, Letter, QuestionTurn, Trap } from '../../game/types'
 import { answerText, fetchCards } from '../../lib/cards'
 import { readableError } from '../../lib/errors'
+import { playSound, vibrate } from '../../lib/feedback'
 import { getGame, saveGame } from '../../lib/games'
-import { stopSpeaking } from '../../lib/speech'
+import { useOnline } from '../../lib/online'
+import { getPreferences } from '../../lib/preferences'
+import { readAloud, stopSpeaking } from '../../lib/speech'
 import type { Card } from '../../types/card'
 import BetGauge from './BetGauge'
 import BoardView from './BoardView'
@@ -62,6 +65,12 @@ type Phase =
 
 type FinalStart = { playerId: string; askerId: string; bonus: boolean }
 
+// Ce que lit la synthèse vocale : la question, puis les 4 réponses dans l'ordre affiché
+function questionText(card: Card, order: Letter[]) {
+  const answers = order.map((letter, index) => `${index + 1}: ${answerText(card, letter)}.`)
+  return `${card.question} ${answers.join(' ')}`
+}
+
 // Une partie en cours (maquettes « game », « Bet », « question », « True / False », « board »)
 function GamePage() {
   const { id = '' } = useParams()
@@ -69,7 +78,10 @@ function GamePage() {
   const [cards, setCards] = useState<Map<number, Card> | null>(null)
   const [isMissing, setIsMissing] = useState(false)
   const [error, setError] = useState('')
-  const [saveFailed, setSaveFailed] = useState(false)
+  // synced : envoyé à Supabase · local : gardé sur le téléphone, envoyé au retour du réseau
+  // failed : enregistré nulle part
+  const [saveStatus, setSaveStatus] = useState<'synced' | 'local' | 'failed'>('synced')
+  const online = useOnline()
   const [phase, setPhase] = useState<Phase>({ step: 'draw' }) // l'étape du tour, en mémoire seulement
   const [showBoard, setShowBoard] = useState(false)
 
@@ -87,7 +99,9 @@ function GamePage() {
         if (loaded.deck.length === 0) {
           // Première ouverture : le paquet est mélangé une fois pour toutes, puis enregistré
           loaded = { ...loaded, deck: buildDeck(cardList, loaded.settings.difficulty) }
-          saveGame(id, loaded).catch(() => setSaveFailed(true))
+          saveGame(id, loaded)
+            .then(setSaveStatus)
+            .catch(() => setSaveStatus('failed'))
         }
         setCards(new Map(cardList.map((card) => [card.id, card])))
         setState(loaded)
@@ -110,17 +124,38 @@ function GamePage() {
   const roles = state ? rolesFor(state, turnNumber(state)) : null
   const ranking = state ? standings(state) : []
 
+  // Un piège sort du paquet : petit son d'alerte (pas sur le défi final ni en fin de partie)
+  const atFinish =
+    state && roles ? spaceOf(state, roles.answerer.id) >= state.settings.boardSize : false
+  const trapSoundIndex =
+    phase.step === 'draw' &&
+    drawnTrap &&
+    draw &&
+    state?.firstAnswererId &&
+    !state.winnerId &&
+    !atFinish
+      ? draw.index
+      : null
+  useEffect(() => {
+    if (trapSoundIndex !== null) playSound('trap')
+  }, [trapSoundIndex])
+
   // L'écran change tout de suite, l'enregistrement suit en arrière-plan
   function persist(next: GameState) {
     setState(next)
     saveGame(id, next)
-      .then(() => setSaveFailed(false))
-      .catch(() => setSaveFailed(true))
+      .then(setSaveStatus)
+      .catch(() => setSaveStatus('failed'))
   }
 
-  // Toucher la carte : la question apparaît et le timer démarre (à la fin du retournement)
+  // Toucher la carte : la question apparaît et le timer démarre (à la fin du retournement).
+  // Préférence « Voice over » : la question est lue tout de suite.
   function reveal(plan: Plan) {
     if (!state) return
+    playSound('flip')
+    if (getPreferences().voiceOver) {
+      readAloud(questionText(plan.card, answerOrder(id, plan.cardIndex)))
+    }
     const deadline = Date.now() + FLIP_MS + state.settings.timerSeconds * 1000
     setPhase({ step: 'question', plan, picked: null, deadline })
   }
@@ -129,8 +164,10 @@ function GamePage() {
   function finishTurn(timedOut: boolean) {
     if (phase.step !== 'question' || !state || !roles) return
     stopSpeaking()
-    if (timedOut) navigator.vibrate?.(200)
     const { plan, picked } = phase
+    const correct = picked === plan.card.correct
+    playSound(correct ? 'right' : 'wrong')
+    if (!correct) vibrate(200)
     const turn: QuestionTurn = {
       kind: 'question',
       answererId: roles.answerer.id,
@@ -138,7 +175,7 @@ function GamePage() {
       cardId: plan.card.id,
       bet: plan.bet,
       picked,
-      correct: picked === plan.card.correct,
+      correct,
       trap: plan.trap,
       declined: false,
     }
@@ -188,6 +225,7 @@ function GamePage() {
       declined: result.declined,
       bonus: start.bonus,
     }
+    if (!result.declined) playSound(won ? 'win' : 'wrong')
     const cursor = used.length > 0 ? used[used.length - 1].index + 1 : state.cursor
     setPhase({ step: 'finalResult', turn, cards: used.map((entry) => entry.card) })
     persist({
@@ -256,14 +294,20 @@ function GamePage() {
   const size = state.settings.boardSize
   const findPlayer = (playerId: string) =>
     state.players.find((player) => player.id === playerId) ?? roles.answerer
-  const saveAlert = saveFailed && (
-    <p className={styles.saveAlert} role="alert">
-      Not saved: check your connection.
-      <button type="button" onClick={() => persist(state)}>
-        Retry
-      </button>
-    </p>
-  )
+  // Hors ligne, le bandeau de l'écran suffit. Avec du réseau, on signale ce qui n'est pas parti.
+  let saveAlert: ReactNode = null
+  if (saveStatus === 'failed' || (saveStatus === 'local' && online)) {
+    saveAlert = (
+      <p className={styles.saveAlert} role="alert">
+        {saveStatus === 'failed'
+          ? 'Not saved: check your connection.'
+          : 'Saved on this phone only.'}
+        <button type="button" onClick={() => persist(state)}>
+          Retry
+        </button>
+      </p>
+    )
+  }
 
   // Résultat du défi final, puis fin de partie s'il y a un gagnant
   if (phase.step === 'finalResult') {
@@ -449,9 +493,7 @@ function GamePage() {
       : 'Tap the card to reveal the question.'
   }
 
-  const textToRead = `${card.question} ${order
-    .map((letter, index) => `${index + 1}: ${answerText(card, letter)}.`)
-    .join(' ')}`
+  const textToRead = questionText(card, order)
 
   return (
     <Screen tight footer={footer}>

@@ -42,3 +42,16 @@
   margin: 0 auto;
   padding: 12px var(--page-x) max(32px, env(safe-area-inset-bottom));
 }
+
+/* Bandeau « hors ligne » : discret, au-dessus du contenu */
+.offline {
+  align-self: center;
+  margin-bottom: -8px;
+  padding: 4px 14px;
+  border-radius: 100px;
+  background: rgb(0 0 0 / 0.35);
+  color: var(--color-yellow);
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  text-align: center;
+}

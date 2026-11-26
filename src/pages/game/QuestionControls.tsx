@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import LineIcon from '../../components/LineIcon'
+import { playSound } from '../../lib/feedback'
 import { canSpeak, speak } from '../../lib/speech'
 import styles from './QuestionControls.module.css'
 
@@ -23,6 +24,11 @@ function QuestionControls({ textToRead, seconds, deadline }: QuestionControlsPro
 
   const left = deadline === null ? 0 : Math.min(seconds, Math.max(0, (deadline - now) / 1000))
   const shownSeconds = Math.ceil(left)
+
+  // Les 5 dernières secondes : un petit « tic » par seconde
+  useEffect(() => {
+    if (deadline !== null && shownSeconds > 0 && shownSeconds <= 5) playSound('tick')
+  }, [deadline, shownSeconds])
 
   return (
     <>

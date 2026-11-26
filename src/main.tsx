@@ -8,6 +8,14 @@ import './styles/tokens.css'
 import './styles/base.css'
 import App from './App.tsx'
 
+// Mode hors ligne : le service worker garde l'app sur le téléphone (version publiée seulement,
+// pas pendant « npm run dev » où il gênerait le rechargement automatique)
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => undefined)
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* Le routeur relie chaque adresse (/, /profile…) à un écran */}

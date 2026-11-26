@@ -3,7 +3,9 @@ import { Navigate, Route, Routes } from 'react-router'
 import { ProfileContext } from './account/profileContext'
 import { Button } from './components/Button'
 import Screen from './components/Screen'
+import { fetchCards } from './lib/cards'
 import { readableError } from './lib/errors'
+import { syncPendingGames } from './lib/games'
 import { getCurrentProfile, type Profile } from './lib/profile'
 import GamePage from './pages/game/GamePage'
 import HomePage from './pages/HomePage'
@@ -24,13 +26,25 @@ function App() {
 
   const loadAccount = useCallback(() => {
     getCurrentProfile()
-      .then((profile) =>
-        setAccount(profile ? { status: 'ready', profile } : { status: 'missing' }),
-      )
+      .then((profile) => setAccount(profile ? { status: 'ready', profile } : { status: 'missing' }))
       .catch((caught: unknown) => setAccount({ status: 'error', message: readableError(caught) }))
   }, [])
 
   useEffect(loadAccount, [loadAccount])
+
+  // Compte prêt, puis à chaque retour du réseau : on envoie les parties jouées hors ligne
+  // et on garde une copie à jour des questions sur le téléphone
+  const ready = account.status === 'ready'
+  useEffect(() => {
+    if (!ready) return
+    const sync = () => {
+      void syncPendingGames()
+      fetchCards().catch(() => undefined)
+    }
+    sync()
+    window.addEventListener('online', sync)
+    return () => window.removeEventListener('online', sync)
+  }, [ready])
 
   if (account.status === 'loading') {
     return (
