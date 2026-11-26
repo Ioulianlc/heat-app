@@ -25,8 +25,8 @@ function HowToPlayPage() {
       <section className={styles.block} aria-labelledby="aim">
         <h2 id="aim">The aim</h2>
         <p>
-          Be the first player to reach the finish line of the board… and survive the final
-          challenge waiting for you there. 4 to 6 players, 30 to 45 minutes.
+          Be the first player to reach the finish line of the board… and survive the final challenge
+          waiting for you there. 4 to 6 players, 30 to 45 minutes.
         </p>
       </section>
 
@@ -35,14 +35,13 @@ function HowToPlayPage() {
         <p>Each turn has an asker, who holds the phone, and an answerer, who plays.</p>
         <ol className={styles.steps}>
           <li>
-            <strong>Draw.</strong> The asker reveals only the topic of the card.
+            <strong>Draw.</strong> The asker reveals only the topic of the card, or a trap card.
           </li>
           <li>
             <strong>Bet.</strong> The answerer bets 1 to 4 chillies on that topic.
           </li>
           <li>
-            <strong>Ask.</strong> The asker reads the question. If it is a trap card, its effect
-            comes first.
+            <strong>Ask.</strong> The asker reads the question.
           </li>
           <li>
             <strong>Answer.</strong> One answer. No phone, no help from the others.
@@ -55,30 +54,36 @@ function HowToPlayPage() {
             hottest).
           </li>
           <li>
-            <strong>Next turn.</strong> The answerer becomes the asker, and the next player
-            answers.
+            <strong>Next turn.</strong> The answerer becomes the asker, and the next player answers.
           </li>
         </ol>
       </section>
 
       <section className={styles.block} aria-labelledby="traps">
         <h2 id="traps">Trap cards</h2>
-        <p>They look like any other card and are revealed only after the bet.</p>
+        <p>
+          About one card in ten is a trap. It shows up when the card is drawn, before the bet. The
+          question then comes from a new card.
+        </p>
         <dl className={styles.traps}>
           <dt>Substitution</dt>
-          <dd>The player on the answerer's right answers instead. Wrong? They take the sauce.</dd>
-          <dt>Double or Nothing</dt>
-          <dd>A new question is drawn. Right: move as usual. Wrong: take the sauce twice.</dd>
-          <dt>Forced Bet</dt>
-          <dd>The asker chooses the number of chillies, replacing the bet already made.</dd>
+          <dd>
+            The answerer bets, but the player on their right answers. Right: the answerer moves.
+            Wrong: the substitute takes the sauce.
+          </dd>
+          <dt>X2</dt>
+          <dd>The sauce is doubled. Right: move as usual. Wrong: take the sauce twice.</dd>
+          <dt>Forced</dt>
+          <dd>The player on the answerer's left chooses the bet.</dd>
         </dl>
       </section>
 
       <section className={styles.block} aria-labelledby="end">
         <h2 id="end">The final challenge</h2>
         <p>
-          The first player to reach or pass the finish line takes one dose of the hottest sauce.
-          The asker draws 5 cards from the pile and reads them in a row, then the player answers all 5 in order.
+          The first player to reach or pass the finish line takes one dose of the hottest sauce. The
+          asker draws 5 cards from the pile and reads them in a row, then the player answers all 5
+          in order.
         </p>
         <p>
           All 5 right? You win! Even one wrong? Stay on the finish line and try again on your next

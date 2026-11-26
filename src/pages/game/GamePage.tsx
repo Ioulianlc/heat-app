@@ -45,11 +45,9 @@ const ANSWER_DELAY = 450 // la réponse touchée reste en jaune un instant avant
 
 // Les étapes d'un tour, dans l'ordre
 type Phase =
-  | { step: 'draw' } // dos de la carte : le poseur annonce le thème
+  | { step: 'draw' } // dos de la carte (le poseur annonce le thème) ou carte piège
   | { step: 'bet'; value: Bet | null } // la jauge de pari
   | { step: 'reveal'; plan: Plan } // pari posé : toucher la carte pour la retourner
-  | { step: 'trap'; plan: Plan } // c'était un piège : on lit l'effet, puis on tire une nouvelle carte
-  | { step: 'forced'; plan: Plan; value: Bet | null } // Forced Bet : le poseur choisit le pari
   | { step: 'question'; plan: Plan; picked: Letter | null; deadline: number | null }
   | {
       step: 'result'
@@ -63,12 +61,6 @@ type Phase =
   | { step: 'finalResult'; turn: FinalTurn; cards: Card[] }
 
 type FinalStart = { playerId: string; askerId: string; bonus: boolean }
-
-const TRAP_BUTTONS: Record<Trap, string> = {
-  substitution: 'Draw a new card',
-  double: 'Draw a new card',
-  forced: 'Choose the bet',
-}
 
 // Une partie en cours (maquettes « game », « Bet », « question », « True / False », « board »)
 function GamePage() {
@@ -111,6 +103,10 @@ function GamePage() {
 
   // Ce qui se déduit de l'état : la carte du tour, qui joue, le classement
   const draw = state && cards ? drawCard(state.deck, state.cursor, cards) : null
+  // Piège (maquette V4) : il apparaît au tirage, avant le pari. La question vient de la carte suivante.
+  const drawnTrap = draw ? trapAt(id, draw.index) : null
+  const questionDraw =
+    state && cards && draw && drawnTrap ? drawCard(state.deck, draw.index + 1, cards) : draw
   const roles = state ? rolesFor(state, turnNumber(state)) : null
   const ranking = state ? standings(state) : []
 
@@ -122,31 +118,11 @@ function GamePage() {
       .catch(() => setSaveFailed(true))
   }
 
-  // Toucher la carte : piège (une fois par tour) ou la question, avec le timer lancé
-  // (il démarre à la fin du retournement)
+  // Toucher la carte : la question apparaît et le timer démarre (à la fin du retournement)
   function reveal(plan: Plan) {
     if (!state) return
-    const trap = plan.trap === null ? trapAt(id, plan.cardIndex) : null
-    if (trap) {
-      setPhase({ step: 'trap', plan: { ...plan, trap } })
-      return
-    }
     const deadline = Date.now() + FLIP_MS + state.settings.timerSeconds * 1000
     setPhase({ step: 'question', plan, picked: null, deadline })
-  }
-
-  // Après un piège, le poseur tire une nouvelle carte : elle arrive face cachée, avec son thème
-  function drawNewCard(plan: Plan) {
-    if (!state || !cards) return
-    const next = drawCard(state.deck, plan.cardIndex + 1, cards)
-    if (next)
-      setPhase({ step: 'reveal', plan: { ...plan, card: next.card, cardIndex: next.index } })
-  }
-
-  // Appliquer l'effet du piège (maquette V3 + PDF)
-  function applyTrap(plan: Plan) {
-    if (plan.trap === 'forced') setPhase({ step: 'forced', plan, value: null })
-    else drawNewCard(plan)
   }
 
   // Fin du tour : réponse validée, ou timer écoulé (la réponse choisie, s'il y en a une, compte)
@@ -260,7 +236,7 @@ function GamePage() {
       </Screen>
     )
   }
-  if (!draw) {
+  if (!draw || !questionDraw) {
     return (
       <Screen>
         <p role="alert">No questions available.</p>
@@ -363,7 +339,8 @@ function GamePage() {
   const card = isResult ? phase.card : (plan?.card ?? draw.card)
   const cardIndex = isResult ? phase.cardIndex : (plan?.cardIndex ?? draw.index)
   const bet = isResult ? phase.turn.bet : (plan?.bet ?? null)
-  const trap = isResult ? phase.turn.trap : (plan?.trap ?? null)
+  // Avant le pari, le piège vient du tirage ; ensuite, il est dans le plan du tour
+  const trap = isResult ? phase.turn.trap : plan ? plan.trap : drawnTrap
   const order = answerOrder(id, cardIndex)
 
   // Substitution : une fois la nouvelle carte tirée, c'est le poseur qui répond
@@ -385,7 +362,7 @@ function GamePage() {
     />
   )
 
-  // La jauge de pari : celle du répondant, ou celle du poseur sur un Forced Bet
+  // La jauge de pari (maquette « iphone 17 - 25 »)
   function betScreen(
     title: string,
     note: string | null,
@@ -402,7 +379,7 @@ function GamePage() {
             disabled={value === null}
             onClick={() => value && onConfirm(value)}
           >
-            Place bet
+            Go to the question
           </Button>
         }
       >
@@ -415,34 +392,31 @@ function GamePage() {
     )
   }
 
+  // Après un piège, la carte de la question est la suivante du paquet : elle arrive face cachée
   if (phase.step === 'bet') {
     return betScreen(
       'Bet your peppers',
-      null,
+      drawnTrap === 'forced' ? `${roles.left.name} bets for ${answerer.name}.` : null,
       phase.value,
       (value) => setPhase({ step: 'bet', value }),
       (chosen) =>
         setPhase({
           step: 'reveal',
-          plan: { bet: chosen, trap: null, card: draw.card, cardIndex: draw.index },
+          plan: {
+            bet: chosen,
+            trap: drawnTrap,
+            card: questionDraw.card,
+            cardIndex: questionDraw.index,
+          },
         }),
-    )
-  }
-  if (phase.step === 'forced') {
-    return betScreen(
-      'Forced bet',
-      `${asker.name} chooses the bet for ${answerer.name}.`,
-      phase.value,
-      (value) => setPhase({ ...phase, value }),
-      (chosen) => drawNewCard({ ...phase.plan, bet: chosen }),
     )
   }
 
   // Sous la carte piège : l'effet avec le nom des joueurs
   const trapHints: Record<Trap, string> = {
-    substitution: `${asker.name} answers for ${answerer.name}. Right: ${answerer.name} moves. Wrong: ${asker.name} takes the sauce.`,
+    substitution: `${answerer.name} bets, ${asker.name} answers. Right: ${answerer.name} moves. Wrong: ${asker.name} takes the sauce.`,
     double: `Right: ${answerer.name} moves as usual. Wrong: ${answerer.name} takes the sauce twice.`,
-    forced: `${asker.name} chooses the bet for ${answerer.name}.`,
+    forced: `${roles.left.name} chooses the bet for ${answerer.name}.`,
   }
 
   let footer = null
@@ -460,22 +434,20 @@ function GamePage() {
         Place your bet
       </Button>
     )
-  } else if (phase.step === 'trap' && phase.plan.trap) {
-    footer = (
-      <Button variant="primary" onClick={() => applyTrap(phase.plan)}>
-        {TRAP_BUTTONS[phase.plan.trap]}
-      </Button>
-    )
   }
 
+  // Le piège montré au tirage (une seule fois par tour)
+  const trapShown = phase.step === 'draw' ? drawnTrap : null
+
   let hint = ''
-  if (phase.step === 'draw') hint = `${asker.name}, read the topic out loud.`
+  if (phase.step === 'draw') {
+    hint = trapShown ? trapHints[trapShown] : `${asker.name}, read the topic out loud.`
+  }
   if (phase.step === 'reveal') {
     hint = phase.plan.trap
       ? `${asker.name}, read the new topic, then tap the card.`
       : 'Tap the card to reveal the question.'
   }
-  if (phase.step === 'trap' && phase.plan.trap) hint = trapHints[phase.plan.trap]
 
   const textToRead = `${card.question} ${order
     .map((letter, index) => `${index + 1}: ${answerText(card, letter)}.`)
@@ -491,7 +463,7 @@ function GamePage() {
           key={cardIndex}
           card={card}
           order={order}
-          flipped={phase.step === 'trap' || phase.step === 'question' || isResult}
+          flipped={trapShown !== null || phase.step === 'question' || isResult}
           onFlip={phase.step === 'reveal' ? () => reveal(phase.plan) : undefined}
           picked={phase.step === 'question' ? phase.picked : isResult ? phase.turn.picked : null}
           onPick={
@@ -500,11 +472,7 @@ function GamePage() {
               : undefined
           }
           showAnswer={isResult}
-          trap={
-            phase.step === 'trap' && phase.plan.trap ? (
-              <TrapFace trap={phase.plan.trap} />
-            ) : undefined
-          }
+          trap={trapShown ? <TrapFace trap={trapShown} answerer={answerer.name} /> : undefined}
           controls={
             <QuestionControls
               textToRead={textToRead}

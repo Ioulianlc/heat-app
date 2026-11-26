@@ -27,7 +27,7 @@ function GameCard(props: GameCardProps) {
     props
   // « posée » : retournement terminé (ou carte affichée déjà retournée)
   const [settled, setSettled] = useState(flipped)
-  const isHot = card.difficulty === 4 // Very Hot : la carte noire aux flammes
+  const isHot = card.difficulty === 4 && !trap // Very Hot : la carte noire aux flammes
   const showAnswers = flipped && settled && !trap
 
   // Fin du retournement : une minuterie de la durée de l'animation. Plus fiable que l'événement

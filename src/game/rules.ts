@@ -19,7 +19,11 @@ export function rolesFor(state: GameState, turnIndex: number) {
     players.findIndex((player) => player.id === state.firstAnswererId),
   )
   const answerer = (first + turnIndex) % count
-  return { answerer: players[answerer], asker: players[(answerer - 1 + count) % count] }
+  return {
+    answerer: players[answerer],
+    asker: players[(answerer - 1 + count) % count], // à sa droite
+    left: players[(answerer + 1) % count], // à sa gauche : il mise à sa place sur un Forced Bet
+  }
 }
 
 // Double or Nothing : la sauce est prise deux fois

@@ -16,10 +16,9 @@ type GameOverProps = {
   dialog?: ReactNode // le résultat du défi final, affiché par-dessus juste après la victoire
 }
 
-// Fin de partie : la fenêtre « Game over ! » de la maquette V3 (podium + classement numéroté)
+// Fin de partie : la fenêtre « Game over ! » de la maquette V4 (podium + classement numéroté)
 function GameOver({ ranking, boardSize, alert, dialog }: GameOverProps) {
   const navigate = useNavigate()
-  const winner = ranking[0].player
 
   return (
     <Screen tight>
@@ -29,18 +28,12 @@ function GameOver({ ranking, boardSize, alert, dialog }: GameOverProps) {
       {dialog ?? (
         <Modal labelledBy="game-over-title" onClose={() => navigate('/')} tone="maroon">
           <div className={styles.body}>
-            <div>
-              <h2 id="game-over-title">Game over !</h2>
-              <p className={styles.winner}>{winner.name} wins the game!</p>
-            </div>
+            <h2 id="game-over-title">Game over !</h2>
             <Podium players={ranking.map((standing) => standing.player)} />
             <RankingList ranking={ranking} boardSize={boardSize} numbered />
-            <div className={styles.actions}>
-              <Button variant="primary" onClick={() => navigate('/')}>
-                Back to home
-              </Button>
-              <Button onClick={() => navigate('/new')}>New game</Button>
-            </div>
+            <Button variant="primary" onClick={() => navigate('/new')}>
+              New game
+            </Button>
           </div>
         </Modal>
       )}
