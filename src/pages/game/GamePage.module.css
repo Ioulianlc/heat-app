@@ -38,6 +38,11 @@
   letter-spacing: -0.03em;
 }
 
+.note {
+  margin-top: -12px;
+  color: var(--color-yellow);
+}
+
 .chiliIcon {
   display: inline-flex;
   color: var(--color-red);

@@ -1,0 +1,42 @@
+.ranking {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 1px solid var(--color-yellow);
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.place {
+  min-width: 15px;
+  color: var(--color-yellow);
+  font-family: var(--font-title);
+  font-size: var(--text-heading);
+  line-height: 1.2;
+}
+
+.space {
+  flex: none;
+  color: var(--color-yellow);
+  font-family: var(--font-title);
+  font-size: var(--text-heading);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}

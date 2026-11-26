@@ -1,0 +1,64 @@
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 96px;
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Les marches prennent la couleur du texte à 12 % : elles se voient sur toutes les couleurs de carte */
+.block {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.first {
+  order: 2;
+}
+
+.first .block {
+  height: 75px;
+  background: var(--podium-first, var(--color-yellow));
+  color: #1e1e1e;
+}
+
+.second {
+  order: 1;
+}
+
+.second .block {
+  height: 58px;
+}
+
+.third {
+  order: 3;
+}
+
+.third .block {
+  height: 46px;
+}

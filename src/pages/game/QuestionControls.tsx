@@ -6,44 +6,23 @@ import styles from './QuestionControls.module.css'
 type QuestionControlsProps = {
   textToRead: string
   seconds: number // durée du timer (réglage de la partie)
-  deadline: number | null // heure de fin du timer, ou null s'il n'est pas lancé
-  onStart?: () => void // absent : timer verrouillé (réponse déjà donnée)
+  deadline: number | null // heure de fin du timer · null : pas de barre (réponse déjà donnée)
 }
 
-// Bouton « lire à voix haute » + timer (maquette « question V2 »)
-function QuestionControls({ textToRead, seconds, deadline, onStart }: QuestionControlsProps) {
+// Bouton « lire à voix haute » + barre du timer (maquette V3 « iphone 17 - 9 »)
+function QuestionControls({ textToRead, seconds, deadline }: QuestionControlsProps) {
   const [now, setNow] = useState(() => Date.now())
 
-  // Le timer ne compte pas lui-même : il affiche l'écart avec l'heure de fin.
-  // Ainsi il reste juste même si l'écran est mis en arrière-plan.
+  // La barre ne compte pas elle-même : elle affiche l'écart avec l'heure de fin.
+  // Ainsi elle reste juste même si l'écran est mis en arrière-plan.
   useEffect(() => {
     if (deadline === null) return
     const id = window.setInterval(() => setNow(Date.now()), 200)
     return () => window.clearInterval(id)
   }, [deadline])
 
-  let timer
-  if (deadline === null) {
-    timer = (
-      <button type="button" className={styles.start} onClick={onStart} disabled={!onStart}>
-        <LineIcon name="timer" />
-        Start timer
-      </button>
-    )
-  } else {
-    const left = Math.min(seconds, Math.max(0, Math.ceil((deadline - now) / 1000)))
-    timer = (
-      <div
-        className={`${styles.running} ${left <= 5 ? styles.urgent : ''}`}
-        role="timer"
-        aria-label={`${left} seconds left`}
-        style={{ '--progress': `${(left / seconds) * 100}%` } as CSSProperties}
-      >
-        <LineIcon name="timer" />
-        {left} s
-      </div>
-    )
-  }
+  const left = deadline === null ? 0 : Math.min(seconds, Math.max(0, (deadline - now) / 1000))
+  const shownSeconds = Math.ceil(left)
 
   return (
     <>
@@ -57,7 +36,18 @@ function QuestionControls({ textToRead, seconds, deadline, onStart }: QuestionCo
           <LineIcon name="sound" size={22} />
         </button>
       )}
-      {timer}
+      {deadline !== null && (
+        <div
+          className={`${styles.track} ${shownSeconds <= 5 ? styles.urgent : ''}`}
+          role="timer"
+          aria-label={`${shownSeconds} seconds left`}
+        >
+          <div
+            className={styles.fill}
+            style={{ '--left': `${(left / seconds) * 100}%` } as CSSProperties}
+          />
+        </div>
+      )}
     </>
   )
 }

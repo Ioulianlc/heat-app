@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
 import { useProfile } from '../account/profileContext'
 import { ButtonLink } from '../components/Button'
 import IconButton from '../components/IconButton'
 import Screen from '../components/Screen'
 import UiIcon from '../components/UiIcon'
 import { readableError } from '../lib/errors'
-import { listGames, type GameRow } from '../lib/games'
+import { listGames, type Game } from '../lib/games'
+import HomeGameCard from './HomeGameCard'
 import styles from './HomePage.module.css'
 
-const dateFormat = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' })
+const SHOWN_GAMES = 5 // le paquet de cartes montre les 5 dernières parties
 
 // Accueil (maquette « user page V2 »)
 function HomePage() {
   const profile = useProfile()
-  const [games, setGames] = useState<GameRow[] | null>(null)
+  const [games, setGames] = useState<Game[] | null>(null)
   const [error, setError] = useState('')
+  const [openId, setOpenId] = useState<string | null>(null) // la carte dépliée
+
+  // Dans le paquet, la plus récente est devant (en bas), comme dans la maquette
+  const shown = games ? games.slice(0, SHOWN_GAMES).reverse() : []
+  const frontId = openId ?? shown.at(-1)?.id
 
   useEffect(() => {
     listGames()
@@ -59,15 +64,15 @@ function HomePage() {
           </div>
         )}
 
-        {/* Version simple en attendant les cartes de partie de la maquette (étape du tour de jeu) */}
-        {games && games.length > 0 && (
-          <ul className={styles.list}>
-            {games.map((game) => (
+        {shown.length > 0 && (
+          <ul className={styles.stack}>
+            {shown.map((game) => (
               <li key={game.id}>
-                <Link to={`/game/${game.id}`} className={styles.game}>
-                  <span>{dateFormat.format(new Date(game.created_at))}</span>
-                  <span>{game.status === 'playing' ? 'In progress' : 'Finished'}</span>
-                </Link>
+                <HomeGameCard
+                  game={game}
+                  open={game.id === frontId}
+                  onOpen={() => setOpenId(game.id)}
+                />
               </li>
             ))}
           </ul>

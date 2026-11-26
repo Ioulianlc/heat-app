@@ -72,6 +72,8 @@ function NewGamePage() {
         deck: [], // mélangé à l'ouverture de la partie
         cursor: 0,
         turns: [],
+        edits: [],
+        winnerId: null,
       })
       navigate(`/game/${id}`)
     } catch (caught) {

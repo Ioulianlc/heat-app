@@ -34,21 +34,15 @@
   background: var(--surface);
 }
 
-.list {
+/* Le paquet : chaque carte recouvre le bas de la précédente */
+.stack {
   display: flex;
   flex-direction: column;
-  gap: var(--gap);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.game {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-radius: var(--radius);
-  background: var(--color-red);
-  font-weight: 700;
-  text-decoration: none;
+.stack > li + li {
+  margin-top: -20px;
 }

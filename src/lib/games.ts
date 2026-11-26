@@ -1,4 +1,4 @@
-import type { GameState } from '../game/types'
+import type { GameState, Turn } from '../game/types'
 import { supabase } from './supabase'
 
 // Une partie telle que l'accueil la liste
@@ -12,14 +12,35 @@ export type GameRow = {
 // Une partie complète, avec ses joueurs et ses réglages
 export type Game = GameRow & { state: GameState }
 
+// Ce qu'une version plus ancienne de l'app a pu enregistrer : certains champs manquent
+type SavedState = Pick<GameState, 'version' | 'settings' | 'players'> &
+  Partial<Omit<GameState, 'turns'>> & { turns?: Partial<Turn>[] }
+
+// On complète avec les valeurs de départ, pour que le reste de l'app voie toujours la forme actuelle
+function normalize(saved: SavedState): GameState {
+  const state = {
+    firstAnswererId: null,
+    deck: [],
+    cursor: 0,
+    turns: [],
+    edits: [],
+    winnerId: null,
+    ...saved,
+  }
+  const turns = state.turns.map(
+    (turn) => ({ kind: 'question', trap: null, declined: false, ...turn }) as Turn,
+  )
+  return { ...state, turns }
+}
+
 // Les parties de ce compte, la plus récente en premier (la règle RLS filtre les autres)
-export async function listGames(): Promise<GameRow[]> {
+export async function listGames(): Promise<Game[]> {
   const { data, error } = await supabase
     .from('games')
-    .select('id, status, created_at, updated_at')
+    .select('id, status, created_at, updated_at, state')
     .order('updated_at', { ascending: false })
   if (error) throw error
-  return data
+  return data.map((game) => ({ ...game, state: normalize(game.state) }))
 }
 
 // Enregistre une nouvelle partie et renvoie son identifiant.
@@ -40,15 +61,16 @@ export async function getGame(id: string): Promise<Game | null> {
   if (error?.code === '22P02') return null // adresse avec un identifiant mal formé
   if (error) throw error
   if (!data) return null
-  // Les parties créées avant le tour de jeu n'ont pas encore ces champs : valeurs de départ
-  return { ...data, state: { firstAnswererId: null, deck: [], cursor: 0, turns: [], ...data.state } }
+  return { ...data, state: normalize(data.state) }
 }
 
-// Enregistre l'état de la partie après chaque tour
+// Enregistre l'état de la partie après chaque tour.
+// La colonne status suit l'état : « finished » dès qu'il y a un gagnant.
 export async function saveGame(id: string, state: GameState) {
+  const status = state.winnerId ? 'finished' : 'playing'
   const { error } = await supabase
     .from('games')
-    .update({ state, updated_at: new Date().toISOString() })
+    .update({ state, status, updated_at: new Date().toISOString() })
     .eq('id', id)
   if (error) throw error
 }

@@ -1,0 +1,24 @@
+.awards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.award {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.label {
+  opacity: 0.6;
+}

@@ -1,0 +1,55 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  color: var(--color-pink);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.won {
+  color: var(--color-yellow);
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-small);
+}
+
+.answers li {
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+}
+
+.right {
+  background: rgb(255 197 2 / 0.2);
+}
+
+.wrong {
+  background: rgb(194 10 32 / 0.45);
+}
+
+.mark {
+  flex: none;
+  width: 1.2em;
+  font-weight: 900;
+}
+
+.right .mark {
+  color: var(--color-yellow);
+}
+
+.correct {
+  display: block;
+  color: var(--color-yellow);
+}

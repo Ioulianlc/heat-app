@@ -1,5 +1,5 @@
 import type { Card } from '../types/card'
-import type { Difficulty, Letter } from './types'
+import type { Difficulty, Letter, Trap } from './types'
 
 // Mélange de Fisher-Yates : chaque ordre a la même chance de sortir
 export function shuffle<T>(items: readonly T[], random: () => number = Math.random): T[] {
@@ -17,8 +17,7 @@ export function shuffle<T>(items: readonly T[], random: () => number = Math.rand
 // 1. le niveau choisi + les Very Hot, mélangés ensemble
 // 2. puis les niveaux voisins, puis les plus éloignés (pour ne répéter qu'en dernier recours)
 export function buildDeck(cards: Card[], difficulty: Difficulty): number[] {
-  const pile = (keep: (card: Card) => boolean) =>
-    shuffle(cards.filter(keep).map((card) => card.id))
+  const pile = (keep: (card: Card) => boolean) => shuffle(cards.filter(keep).map((card) => card.id))
   const distance = (card: Card) => Math.abs(card.difficulty - difficulty)
   return [
     ...pile((card) => card.difficulty === difficulty || card.difficulty === 4),
@@ -36,6 +35,19 @@ export function drawCard(deck: number[], cursor: number, cards: Map<number, Card
     if (card) return { card, index }
   }
   return null
+}
+
+// Les cartes du défi final : les suivantes du paquet (les pièges ne comptent pas)
+export function drawCards(deck: number[], cursor: number, cards: Map<number, Card>, count: number) {
+  const drawn: { card: Card; index: number }[] = []
+  let next = cursor
+  while (drawn.length < count) {
+    const found = drawCard(deck, next, cards)
+    if (!found) break
+    drawn.push(found)
+    next = found.index + 1
+  }
+  return drawn
 }
 
 // Générateur « à graine » : la même graine donne toujours la même suite de nombres
@@ -60,4 +72,15 @@ function hash(text: string) {
 // mais toujours le même pour une carte donnée d'une partie, même après un rechargement
 export function answerOrder(gameId: string, cardIndex: number): Letter[] {
   return shuffle<Letter>(['A', 'B', 'C', 'D'], seededRandom(hash(`${gameId}:${cardIndex}`)))
+}
+
+// Les pièges : environ 1 carte sur 10, les 3 effets à égalité.
+// Tirés à graine eux aussi : rien à enregistrer, et le même piège revient si on recharge la page.
+const TRAPS: Trap[] = ['substitution', 'double', 'forced']
+const TRAP_CHANCE = 0.1
+
+export function trapAt(gameId: string, cardIndex: number): Trap | null {
+  const random = seededRandom(hash(`${gameId}:trap:${cardIndex}`))
+  if (random() >= TRAP_CHANCE) return null
+  return TRAPS[Math.floor(random() * TRAPS.length)]
 }

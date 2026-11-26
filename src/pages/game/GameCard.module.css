@@ -1,9 +1,21 @@
-/* La perspective donne de la profondeur à la rotation */
-.card {
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   width: 100%;
   max-width: 321px;
   margin: 0 auto;
+}
+
+/* La perspective donne de la profondeur à la rotation */
+.card {
+  --card-color: var(--color-wine);
   perspective: 1200px;
+}
+
+/* Very Hot : carte noire */
+.hot {
+  --card-color: var(--color-ink);
 }
 
 .inner {
@@ -16,29 +28,48 @@
   transform: rotateY(180deg);
 }
 
-/* Les deux faces occupent la même case de la grille : la carte prend la hauteur de la plus grande */
+/* Les deux faces occupent la même case de la grille */
 .face {
   display: flex;
   flex-direction: column;
   grid-area: 1 / 1;
-  min-height: min(520px, 62dvh);
   border: 1px solid transparent;
   border-radius: var(--radius);
   color: var(--color-yellow);
   backface-visibility: hidden;
 }
 
-/* Dos : ornements dorés en haut et en bas, bordure dorée dans les coins */
+/* Bordure dorée dans les coins : un dégradé posé sous le fond, visible seulement dans la bordure */
+.back,
+.front {
+  background-color: var(--card-color);
+}
+
+/* Dos : ornements dorés en haut et en bas */
 .back {
   align-items: center;
   justify-content: center;
+  min-height: min(520px, 60dvh);
   padding: 120px 24px;
   background:
     url('../../assets/card-back-top.svg') top center / 100% auto no-repeat,
     url('../../assets/card-back-bottom.svg') bottom center / 100% auto no-repeat,
-    linear-gradient(var(--color-wine), var(--color-wine)) padding-box,
+    linear-gradient(var(--card-color), var(--card-color)) padding-box,
     linear-gradient(135deg, var(--color-yellow), var(--color-wine) 34%, var(--color-wine) 63%, var(--color-yellow)) border-box;
   font: inherit;
+}
+
+.hot .back {
+  background:
+    url('../../assets/card-hot-back-top.svg') top center / 100% auto no-repeat,
+    url('../../assets/card-hot-back-bottom.svg') bottom center / 100% auto no-repeat,
+    linear-gradient(var(--card-color), var(--card-color)) padding-box,
+    linear-gradient(135deg, var(--color-yellow), var(--color-wine) 34%, var(--color-wine) 63%, var(--color-yellow)) border-box;
+}
+
+/* Carte posée sur sa face : le dos sort de la grille, la carte prend la hauteur de la face */
+.settled.flipped .back {
+  display: none;
 }
 
 .tappable {
@@ -57,75 +88,132 @@
   text-align: center;
 }
 
+.hot .theme {
+  font-family: var(--font-title);
+  font-size: 2.3rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
 /* Face : retournée d'avance, elle apparaît quand la carte tourne */
 .front {
-  gap: 18px;
-  padding: 64px 22px 52px;
+  justify-content: center;
+  gap: 22px;
+  min-height: 300px;
+  padding: 72px 24px 22px;
   transform: rotateY(180deg);
   background:
     url('../../assets/card-front-top.svg') top center / 100% auto no-repeat,
+    linear-gradient(var(--card-color), var(--card-color)) padding-box,
+    linear-gradient(135deg, var(--color-yellow), var(--color-wine) 34%, var(--color-wine) 63%, var(--color-yellow)) border-box;
+}
+
+.hot .front {
+  background:
+    url('../../assets/card-hot-front-top.svg') top center / 100% auto no-repeat,
+    linear-gradient(var(--card-color), var(--card-color)) padding-box,
+    linear-gradient(135deg, var(--color-yellow), var(--color-wine) 34%, var(--color-wine) 63%, var(--color-yellow)) border-box;
+}
+
+/* Face d'une carte piège (maquettes « iphone 17 - 16 / 17 ») : toujours bordeaux, losanges sur les côtés.
+   « .card .trapFront » : plus précis que « .hot .front », donc prioritaire même sur une carte Very Hot */
+.card .trapFront {
+  --card-color: var(--color-wine);
+  min-height: min(520px, 60dvh);
+  padding: 90px 40px 90px;
+  background:
+    url('../../assets/card-front-top.svg') top center / 100% auto no-repeat,
+    url('../../assets/card-trap-sides.svg') center / 100% auto no-repeat,
     url('../../assets/card-front-bottom.svg') bottom center / 100% auto no-repeat,
-    linear-gradient(var(--color-wine), var(--color-wine)) padding-box,
+    linear-gradient(var(--card-color), var(--card-color)) padding-box,
     linear-gradient(135deg, var(--color-yellow), var(--color-wine) 34%, var(--color-wine) 63%, var(--color-yellow)) border-box;
 }
 
 .question {
-  padding: 0 14px; /* dégage les crochets dorés sur les côtés */
-  font-size: 1.75rem;
+  font-size: 2rem;
   line-height: 1.2;
   letter-spacing: -0.01em;
   text-align: center;
 }
 
 .long {
-  font-size: 1.375rem;
+  font-size: 1.5rem;
 }
 
+/* Very Hot : question en Bebas, en capitales */
+.hot .question {
+  font-family: var(--font-title);
+  font-size: 2.3rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.hot .long {
+  font-size: 1.85rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+/* Les 4 réponses, sous la carte */
 .answers {
-  display: grid;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.twoColumns {
-  grid-template-columns: 1fr 1fr;
+.answers li {
+  animation: rise 0.3s ease-out backwards;
 }
 
-/* Les boutons blancs de « question V2 » */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inner {
+    transition-duration: 0.01s;
+  }
+  .answers li {
+    animation: none;
+  }
+}
+
 .answer {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   width: 100%;
-  min-height: 54px;
-  padding: 8px 14px;
+  min-height: 46px;
+  padding: 6px 14px;
   border: 0;
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: #f9f5f1;
   color: var(--color-red);
   font-family: var(--font-title);
   font-size: var(--text-label);
   letter-spacing: -0.02em;
   line-height: 1.1;
-  text-align: left;
   cursor: pointer;
+  transition: background-color 0.15s;
 }
 
 .answer:disabled {
   cursor: default;
 }
 
-.number {
-  flex: none;
-}
-
-.picked {
-  background: var(--color-yellow);
-  color: var(--color-wine);
-}
-
+.picked,
 .right {
   background: var(--color-yellow);
   color: var(--color-wine);
@@ -135,12 +223,4 @@
   background: var(--color-red);
   color: var(--color-white);
   text-decoration: line-through;
-}
-
-.controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-top: auto;
 }

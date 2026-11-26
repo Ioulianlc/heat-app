@@ -7,7 +7,7 @@
   list-style: none;
 }
 
-/* Tuiles blanches ; celle du joueur qui répond est sombre, comme dans la maquette */
+/* Tuiles translucides ; celle du joueur qui répond est jaune (maquette V3 « iphone 17 - 14 ») */
 .player {
   display: flex;
   align-items: center;
@@ -15,13 +15,13 @@
   min-height: 36px;
   padding: 4px 10px;
   border-radius: var(--radius);
-  background: var(--color-white);
-  color: var(--color-maroon);
+  background: var(--surface-strong);
+  color: var(--color-white);
 }
 
 .current {
-  background: var(--surface);
-  color: var(--color-white);
+  background: var(--color-yellow);
+  color: var(--color-maroon);
 }
 
 .name {
@@ -33,7 +33,9 @@
 }
 
 .space {
-  font-weight: 700;
+  font-family: var(--font-title);
+  font-size: var(--text-label);
+  line-height: 1;
 }
 
 .grid {
@@ -75,13 +77,63 @@
   gap: 10px;
 }
 
-/* Le petit bouton blanc « Home » */
-.home {
+/* Les deux petits boutons blancs « Edit » et « Home », côte à côte */
+.secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.small {
   display: grid;
   place-items: center;
   min-height: var(--control-height);
+  border: 0;
   border-radius: var(--radius);
   background: var(--color-white);
   color: var(--color-maroon);
+  font: inherit;
   text-decoration: none;
+  cursor: pointer;
+}
+
+/* Mode Edit : une ligne par joueur, avec − et + */
+.editList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.editRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 10px;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-maroon);
+}
+
+.step {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--color-yellow);
+  color: var(--color-maroon);
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.editSpace {
+  min-width: 3.2em;
+  font-weight: 700;
+  text-align: center;
 }

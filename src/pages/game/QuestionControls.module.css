@@ -12,48 +12,36 @@
   cursor: pointer;
 }
 
-/* La pastille jaune « Start timer » */
-.start,
-.running {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-width: 179px;
-  min-height: 40px;
-  padding: 6px 16px;
-  border: 0;
-  border-radius: var(--radius);
-  background: var(--color-yellow);
-  color: var(--color-maroon);
-  font-size: var(--text-small);
+/* La barre du timer : jaune → rouge, elle se vide de droite à gauche */
+.track {
+  width: 100%;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 100px;
+  background: rgb(255 255 255 / 0.2);
 }
 
-.start {
-  cursor: pointer;
+.fill {
+  width: var(--left);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(to right, var(--color-yellow), var(--color-red));
+  transition: width 0.2s linear;
 }
 
-.start:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-/* Timer lancé : la partie jaune rétrécit avec le temps qui reste */
-.running {
-  background: linear-gradient(
-    to right,
-    var(--color-yellow) var(--progress),
-    rgb(255 197 2 / 0.3) var(--progress)
-  );
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
+/* Les 5 dernières secondes : la barre clignote */
 .urgent {
-  background: linear-gradient(
-    to right,
-    var(--color-red) var(--progress),
-    rgb(194 10 32 / 0.35) var(--progress)
-  );
-  color: var(--color-white);
+  animation: blink 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes blink {
+  to {
+    background: rgb(194 10 32 / 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .urgent {
+    animation: none;
+  }
 }

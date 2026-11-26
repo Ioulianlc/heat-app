@@ -1,0 +1,37 @@
+/* Titre en haut, effet en bas, comme sur la maquette */
+.trap {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.8rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  animation: stamp 0.45s 0.55s cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+}
+
+/* Le titre tombe sur la carte quand elle a fini de tourner */
+@keyframes stamp {
+  from {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title {
+    animation: none;
+  }
+}
+
+.text {
+  font-family: var(--font-title);
+  font-size: var(--text-label);
+  line-height: 1.4;
+}

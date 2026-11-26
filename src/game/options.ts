@@ -1,5 +1,5 @@
 import type { IconName } from '../components/icons'
-import type { Bet, Difficulty, GameSettings } from './types'
+import type { Bet, Difficulty, GameSettings, Trap } from './types'
 
 export const MIN_PLAYERS = 4 // la maquette dit « 4 to 6 players »
 export const MAX_PLAYERS = 6
@@ -33,4 +33,10 @@ export const BETS: { value: Bet; name: string }[] = [
 
 export function betName(bet: Bet) {
   return BETS[bet - 1].name
+}
+
+export const TRAP_NAMES: Record<Trap, string> = {
+  substitution: 'Substitution',
+  double: 'Double or Nothing',
+  forced: 'Forced Bet',
 }

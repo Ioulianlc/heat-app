@@ -1,0 +1,91 @@
+/* Une carte de couleur, posée sur la précédente comme dans un paquet */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--card, var(--color-red));
+  box-shadow: 0 -4px 14px rgb(0 0 0 / 0.2);
+  color: var(--color-white);
+}
+
+.darkInk {
+  --podium-first: var(--color-white);
+  color: var(--color-maroon);
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+/* Le lien (ou le bouton) couvre toute la carte grâce à ce pseudo-élément */
+.stretch {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.stretch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+}
+
+.stretch:focus-visible {
+  outline: none;
+}
+
+.stretch:focus-visible::after {
+  outline: 3px solid var(--color-yellow);
+  outline-offset: 2px;
+}
+
+.small {
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.players {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: -6px;
+}
+
+/* Les pions des joueurs, qui se chevauchent */
+.badges {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badges li + li {
+  margin-left: -10px;
+}
