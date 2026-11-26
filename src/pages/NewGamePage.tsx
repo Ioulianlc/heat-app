@@ -64,7 +64,15 @@ function NewGamePage() {
     setIsStarting(true)
     setError('')
     try {
-      const id = await createGame({ version: 1, settings, players })
+      const id = await createGame({
+        version: 1,
+        settings,
+        players,
+        firstAnswererId: null, // choisi à l'ouverture de la partie
+        deck: [], // mélangé à l'ouverture de la partie
+        cursor: 0,
+        turns: [],
+      })
       navigate(`/game/${id}`)
     } catch (caught) {
       setError(readableError(caught))

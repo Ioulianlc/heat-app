@@ -1,5 +1,5 @@
 import type { IconName } from '../components/icons'
-import type { Difficulty, GameSettings } from './types'
+import type { Bet, Difficulty, GameSettings } from './types'
 
 export const MIN_PLAYERS = 4 // la maquette dit « 4 to 6 players »
 export const MAX_PLAYERS = 6
@@ -22,3 +22,15 @@ export const DIFFICULTY_LABELS: Record<Difficulty, string> = { 1: 'Easy', 2: 'Me
 export const BOARD_OPTIONS = [30, 45, 60]
 
 export const DEFAULT_SETTINGS: GameSettings = { timerSeconds: 30, difficulty: 2, boardSize: 30 }
+
+// Les 4 niveaux de pari = les 4 sauces, de la plus douce à la plus forte (jauge « Bet V2 »)
+export const BETS: { value: Bet; name: string }[] = [
+  { value: 1, name: 'Mild' },
+  { value: 2, name: 'Spicy' },
+  { value: 3, name: 'Burning' },
+  { value: 4, name: 'Hell' },
+]
+
+export function betName(bet: Bet) {
+  return BETS[bet - 1].name
+}

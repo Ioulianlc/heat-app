@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: var(--icon-button) minmax(0, 1fr) var(--icon-button);
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spacer {
+  width: var(--icon-button);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: var(--text-small);
+  text-align: center;
+}

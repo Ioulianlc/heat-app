@@ -1,34 +1,7 @@
-.dialog {
-  width: min(100% - 24px, 402px);
-  max-width: none;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-tile);
-  background: var(--color-wine);
-  color: var(--color-white);
-}
-
-.dialog::backdrop {
-  background: rgb(12 8 0 / 0.6);
-}
-
-/* « Pop up down to middle » : la fenêtre descend jusqu'au milieu */
-.dialog[open] {
-  animation: drop 0.25s ease-out;
-}
-
-@keyframes drop {
-  from {
-    opacity: 0;
-    transform: translateY(-32px);
-  }
-}
-
 .form {
   display: flex;
   flex-direction: column;
   gap: 22px;
-  padding: 20px;
 }
 
 .title {

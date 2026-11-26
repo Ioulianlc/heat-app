@@ -1,0 +1,87 @@
+.players {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Tuiles blanches ; celle du joueur qui répond est sombre, comme dans la maquette */
+.player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-maroon);
+}
+
+.current {
+  background: var(--surface);
+  color: var(--color-white);
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.space {
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 72px;
+  padding: 8px;
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+}
+
+.finish {
+  outline: 1px solid var(--color-yellow);
+}
+
+/* Les pions se chevauchent un peu quand plusieurs joueurs sont sur la même case */
+.pawns {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pawns > span + span {
+  margin-left: -8px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Le petit bouton blanc « Home » */
+.home {
+  display: grid;
+  place-items: center;
+  min-height: var(--control-height);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-maroon);
+  text-decoration: none;
+}

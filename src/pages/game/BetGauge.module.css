@@ -1,0 +1,89 @@
+/* Le piment part du bord gauche de l'écran, comme dans la maquette */
+.gauge {
+  position: relative;
+  height: min(470px, 52dvh);
+}
+
+.chili {
+  position: absolute;
+  top: 0;
+  left: calc(-1 * var(--page-x));
+  height: 100%;
+  aspect-ratio: 290 / 470;
+}
+
+.zone {
+  opacity: 0.3;
+  cursor: pointer;
+  transition: opacity 0.25s ease-out;
+}
+
+/* Tranche allumée : elles s'allument l'une après l'autre, du bas vers le haut */
+.lit {
+  opacity: 1;
+  transition-delay: var(--delay);
+}
+
+.line {
+  stroke: rgb(255 255 255 / 0.6);
+  stroke-dasharray: 6 6;
+}
+
+/* Les étiquettes à droite, chacune en face de sa tranche */
+.levels {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  grid-template-rows: 112fr 100fr 96fr 162fr;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.level {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  min-width: 100px;
+  padding: 0 10px 4px;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.mild {
+  align-self: start;
+  margin-top: 22px;
+}
+
+.levelName {
+  color: rgb(255 255 255 / 0.7);
+  font-family: var(--font-title);
+  font-size: var(--text-heading);
+  letter-spacing: -0.015em;
+}
+
+.levelGain {
+  color: rgb(255 255 255 / 0.5);
+  font-size: var(--text-small);
+}
+
+.selected {
+  border-color: var(--color-yellow);
+}
+
+.selected .levelName {
+  color: var(--color-yellow);
+}
+
+.selected .levelGain {
+  color: var(--color-white);
+}
+
+.level:has(input:focus-visible) {
+  outline: 3px solid var(--color-yellow);
+  outline-offset: 3px;
+}

@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
+  overflow-x: clip; /* rien ne dépasse sur les côtés, sans bloquer le pied de page collant */
 }
 
 /* Le fond reste fixe pendant le défilement, y compris sur iPhone */
@@ -26,6 +27,11 @@
   max-width: var(--page-max);
   margin: 0 auto;
   padding: var(--page-top) var(--page-x) 24px;
+}
+
+.tight {
+  gap: 16px;
+  padding-top: 24px;
 }
 
 .footer {

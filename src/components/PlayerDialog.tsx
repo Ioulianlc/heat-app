@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { PLAYER_ICONS, PLAYER_NAME_MAX_LENGTH } from '../game/options'
 import type { Player } from '../game/types'
 import { Button } from './Button'
 import type { IconName } from './icons'
+import Modal from './Modal'
 import PlayerBadge from './PlayerBadge'
 import TextInput from './TextInput'
 import styles from './PlayerDialog.module.css'
@@ -14,10 +15,8 @@ type PlayerDialogProps = {
   onClose: () => void
 }
 
-// Fenêtre « Add a player » (maquette « add player pop up V2 »).
-// Le parent l'affiche quand il en a besoin et la retire à la fermeture.
+// Fenêtre « Add a player » (maquette « add player pop up V2 »)
 function PlayerDialog({ player, others, onSave, onClose }: PlayerDialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
   const takenIcons = others.map((other) => other.icon)
   const takenNames = others.map((other) => other.name.toLowerCase())
 
@@ -26,13 +25,6 @@ function PlayerDialog({ player, others, onSave, onClose }: PlayerDialogProps) {
   const [icon, setIcon] = useState<IconName | undefined>(
     player?.icon ?? PLAYER_ICONS.find((option) => !takenIcons.includes(option.name))?.name,
   )
-
-  // showModal() : la fenêtre passe au premier plan, le reste de la page est bloqué,
-  // la touche Échap la ferme et le focus va dans le premier champ
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (dialog && !dialog.open) dialog.showModal()
-  }, [])
 
   const trimmed = name.trim()
   const nameTaken = takenNames.includes(trimmed.toLowerCase())
@@ -44,14 +36,7 @@ function PlayerDialog({ player, others, onSave, onClose }: PlayerDialogProps) {
   }
 
   return (
-    <dialog
-      ref={dialogRef}
-      className={styles.dialog}
-      aria-labelledby="player-dialog-title"
-      onClose={onClose}
-      // Un appui à côté de la fenêtre (sur le fond assombri) la ferme
-      onClick={(event) => event.target === event.currentTarget && onClose()}
-    >
+    <Modal labelledBy="player-dialog-title" onClose={onClose} dismissible>
       <form className={styles.form} onSubmit={handleSubmit}>
         <h2 id="player-dialog-title" className={styles.title}>
           {player ? 'Edit player' : 'Add a player'}
@@ -108,7 +93,7 @@ function PlayerDialog({ player, others, onSave, onClose }: PlayerDialogProps) {
           </Button>
         </div>
       </form>
-    </dialog>
+    </Modal>
   )
 }
 

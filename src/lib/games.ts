@@ -39,5 +39,16 @@ export async function getGame(id: string): Promise<Game | null> {
     .maybeSingle()
   if (error?.code === '22P02') return null // adresse avec un identifiant mal formé
   if (error) throw error
-  return data
+  if (!data) return null
+  // Les parties créées avant le tour de jeu n'ont pas encore ces champs : valeurs de départ
+  return { ...data, state: { firstAnswererId: null, deck: [], cursor: 0, turns: [], ...data.state } }
+}
+
+// Enregistre l'état de la partie après chaque tour
+export async function saveGame(id: string, state: GameState) {
+  const { error } = await supabase
+    .from('games')
+    .update({ state, updated_at: new Date().toISOString() })
+    .eq('id', id)
+  if (error) throw error
 }

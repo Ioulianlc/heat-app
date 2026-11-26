@@ -1,0 +1,66 @@
+.stage {
+  position: relative;
+}
+
+/* Sur téléphone : deux cartes du paquet dépassent des bords de l'écran, comme dans la maquette */
+@media (max-width: 460px) {
+  .stage::before,
+  .stage::after {
+    content: '';
+    position: absolute;
+    top: 12%;
+    bottom: 0;
+    width: 82px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background:
+      linear-gradient(var(--color-wine), var(--color-wine)) padding-box,
+      linear-gradient(135deg, var(--color-yellow), var(--color-wine) 34%, var(--color-wine) 63%, var(--color-yellow)) border-box;
+  }
+
+  .stage::before {
+    left: calc(-1 * var(--page-x) - 64px);
+  }
+
+  .stage::after {
+    right: calc(-1 * var(--page-x) - 66px);
+  }
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: var(--text-small);
+  text-align: center;
+}
+
+.betTitle {
+  font-size: var(--text-title);
+  letter-spacing: -0.03em;
+}
+
+.chiliIcon {
+  display: inline-flex;
+  color: var(--color-red);
+}
+
+.saveAlert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-red);
+  font-weight: 600;
+}
+
+.saveAlert button {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--color-red);
+  color: var(--color-white);
+  font-weight: 700;
+  cursor: pointer;
+}
