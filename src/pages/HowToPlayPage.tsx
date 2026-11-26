@@ -78,7 +78,7 @@ function HowToPlayPage() {
         <h2 id="end">The final challenge</h2>
         <p>
           The first player to reach or pass the finish line takes one dose of the hottest sauce.
-          The others read 5 questions in a row, then the player answers all 5 in order.
+          The asker draws 5 cards from the pile and reads them in a row, then the player answers all 5 in order.
         </p>
         <p>
           All 5 right? You win! Even one wrong? Stay on the finish line and try again on your next
