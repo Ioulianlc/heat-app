@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
 import { useProfile } from '../account/profileContext'
 import { ButtonLink } from '../components/Button'
 import IconButton from '../components/IconButton'
@@ -62,9 +63,11 @@ function HomePage() {
         {games && games.length > 0 && (
           <ul className={styles.list}>
             {games.map((game) => (
-              <li key={game.id} className={styles.game}>
-                <span>{dateFormat.format(new Date(game.created_at))}</span>
-                <span>{game.status === 'playing' ? 'In progress' : 'Finished'}</span>
+              <li key={game.id}>
+                <Link to={`/game/${game.id}`} className={styles.game}>
+                  <span>{dateFormat.format(new Date(game.created_at))}</span>
+                  <span>{game.status === 'playing' ? 'In progress' : 'Finished'}</span>
+                </Link>
               </li>
             ))}
           </ul>

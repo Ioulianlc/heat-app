@@ -1,0 +1,23 @@
+.players {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-weight: 700;
+}
+
+.note {
+  color: var(--text-muted);
+  font-size: var(--text-small);
+}

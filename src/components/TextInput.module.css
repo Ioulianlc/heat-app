@@ -1,0 +1,20 @@
+.input {
+  width: 100%;
+  min-height: 47px;
+  padding: 10px 11px;
+  border: 1px solid var(--color-maroon);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-maroon);
+}
+
+.input::placeholder {
+  color: var(--color-maroon);
+  opacity: 0.6;
+}
+
+/* Nom verrouillé (le nom du profil ne change pas) */
+.input:read-only {
+  background: var(--mono-700);
+  color: var(--mono-300);
+}

@@ -59,6 +59,11 @@ a {
   color: inherit;
 }
 
+/* Pas de défilement de la page derrière une fenêtre ouverte */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
 /* Contour visible quand on navigue au clavier */
 :focus-visible {
   outline: 3px solid var(--color-yellow);

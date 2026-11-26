@@ -5,6 +5,7 @@ import { Button } from './components/Button'
 import Screen from './components/Screen'
 import { readableError } from './lib/errors'
 import { getCurrentProfile, type Profile } from './lib/profile'
+import GamePage from './pages/GamePage'
 import HomePage from './pages/HomePage'
 import HowToPlayPage from './pages/HowToPlayPage'
 import NewGamePage from './pages/NewGamePage'
@@ -71,6 +72,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/how-to-play" element={<HowToPlayPage />} />
         <Route path="/new" element={<NewGamePage />} />
+        <Route path="/game/:id" element={<GamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </ProfileContext>

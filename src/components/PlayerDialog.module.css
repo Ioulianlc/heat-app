@@ -1,0 +1,113 @@
+.dialog {
+  width: min(100% - 24px, 402px);
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-tile);
+  background: var(--color-wine);
+  color: var(--color-white);
+}
+
+.dialog::backdrop {
+  background: rgb(12 8 0 / 0.6);
+}
+
+/* « Pop up down to middle » : la fenêtre descend jusqu'au milieu */
+.dialog[open] {
+  animation: drop 0.25s ease-out;
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-32px);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 20px;
+}
+
+.title {
+  color: var(--color-pink);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.note {
+  margin-top: -14px;
+  color: var(--text-muted);
+  font-size: var(--text-small);
+}
+
+.error {
+  margin-top: -14px;
+  color: var(--color-yellow);
+  font-weight: 700;
+}
+
+.icons {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+.iconList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.iconOption {
+  position: relative;
+  display: grid;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Le vrai bouton radio est invisible mais posé sur le rond : clavier et lecteurs d'écran marchent */
+.radio {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+/* Icône choisie : un anneau blanc bien visible */
+.iconOption:has(.radio:checked) {
+  outline: 3px solid var(--color-white);
+  outline-offset: 3px;
+}
+
+.iconOption:has(.radio:focus-visible) {
+  outline: 3px solid var(--color-yellow);
+  outline-offset: 3px;
+}
+
+/* Icône déjà prise par un autre joueur */
+.iconOption:has(.radio:disabled) {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}

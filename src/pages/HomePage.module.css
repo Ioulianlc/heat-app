@@ -50,4 +50,5 @@
   border-radius: var(--radius);
   background: var(--color-red);
   font-weight: 700;
+  text-decoration: none;
 }

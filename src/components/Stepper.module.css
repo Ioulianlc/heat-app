@@ -1,0 +1,68 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 59px;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.label {
+  font-family: var(--font-title);
+  font-size: var(--text-label);
+  letter-spacing: -0.02em;
+}
+
+.control {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  width: clamp(140px, 55%, 192px);
+}
+
+/* Les ronds blancs de la maquette */
+.arrow {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--icon-button);
+  height: var(--icon-button);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-maroon);
+  cursor: pointer;
+}
+
+/* Zone de toucher agrandie, sans changer le dessin */
+.arrow::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+
+.arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.value {
+  flex: 1;
+  font-family: var(--font-title);
+  font-size: var(--text-label);
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+}

@@ -1,0 +1,150 @@
+.top {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.players {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* La tuile « joueur » de la maquette */
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 102px;
+  padding: 8px 10px 10px;
+  border-radius: var(--radius-tile);
+  background: var(--color-white);
+  color: var(--color-wine);
+}
+
+.number {
+  font-size: var(--text-small);
+  font-weight: 700;
+  line-height: 25px;
+}
+
+/* Le bouton « modifier » couvre toute la tuile grâce à son ::after */
+.edit {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 28px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.edit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-tile);
+}
+
+.edit:focus-visible {
+  outline: none;
+}
+
+.tile:has(.edit:focus-visible) {
+  outline: 3px solid var(--color-yellow);
+  outline-offset: 3px;
+}
+
+.name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Le « × » passe au-dessus du bouton « modifier » */
+.remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.remove::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+/* La tuile « Add » : contour gris, fond transparent */
+.add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 102px;
+  border: 1px solid #8b8b8b;
+  border-radius: var(--radius-tile);
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.plus {
+  font-size: 1.7rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.hint {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: var(--text-small);
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.sectionTitle {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  letter-spacing: -0.01em;
+}
+
+.error {
+  padding: 10px;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-red);
+  font-weight: 600;
+}

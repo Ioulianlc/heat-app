@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '../components/Button'
 import Logo from '../components/Logo'
 import Screen from '../components/Screen'
+import TextInput from '../components/TextInput'
 import { readableError } from '../lib/errors'
 import { createProfile, NAME_MAX_LENGTH, type Profile } from '../lib/profile'
 import styles from './PortalPage.module.css'
@@ -52,8 +53,7 @@ function PortalPage({ onCreated }: PortalPageProps) {
 
         <label className={styles.field}>
           First name
-          <input
-            className={styles.input}
+          <TextInput
             value={name}
             onChange={(event) => setName(event.target.value)}
             maxLength={NAME_MAX_LENGTH}
