@@ -9,6 +9,7 @@
   --color-wine: #57050e; /* accent-900 : voile des écrans, texte des boutons */
   --color-ink: #0c0800;
   --color-white: #ffffff;
+  --color-green: #0e3703; /* « Right answer » des règles (maquette V5) */
 
   /* Nuancier de la charte */
   --accent-100: #f8def3;
@@ -21,11 +22,6 @@
   --mono-500: #b3b2b0;
   --mono-700: #f9f5f1;
   --mono-900: #ffffff;
-
-  /* Surfaces translucides de la maquette */
-  --surface: rgb(255 255 255 / 0.1);
-  --surface-strong: rgb(255 255 255 / 0.2);
-  --text-muted: rgb(255 255 255 / 0.7);
 
   /* Couleur de chaque icône de joueur (maquette V2) */
   --player-chili: #f094e1;
@@ -59,4 +55,55 @@
   --page-top: 56px;
   --page-max: 430px;
   --gap: 10px;
+}
+
+/* Thème clair (maquette V5) : le thème par défaut.
+   Les composants n'utilisent que ces noms. Changer de thème, c'est seulement changer leurs valeurs. */
+:root {
+  color-scheme: light;
+  --page: var(--mono-700); /* fond de l'écran, sous le motif */
+  --text: var(--color-maroon);
+  --text-muted: rgb(67 21 12 / 0.8);
+  --text-faint: rgb(67 21 12 / 0.65);
+  --accent: var(--color-red); /* le jaune serait illisible sur le fond clair */
+  --focus: var(--color-red);
+  --surface: var(--color-white); /* tuiles et lignes de réglages */
+  --surface-strong: var(--color-white);
+  --line: rgb(67 21 12 / 0.35);
+  --control: var(--color-white); /* boutons ronds : retour, profil, plateau */
+  --on-control: var(--color-maroon);
+  --arrow: var(--color-maroon); /* flèches des réglages */
+  --on-arrow: var(--color-white);
+  --button: var(--color-maroon); /* bouton « New game », « Start game »… */
+  --on-button: var(--color-white);
+  --switch-track: rgb(67 21 12 / 0.15);
+  --switch-knob: var(--color-maroon);
+  --banner: var(--color-maroon);
+  --answer: var(--color-white);
+}
+
+/* Thème sombre (maquettes V1 à V4), choisi dans le profil.
+   [data-surface='dark'] : les fenêtres gardent leur fond bordeaux dans les deux thèmes */
+:root[data-theme='dark'],
+[data-surface='dark'] {
+  color-scheme: dark;
+  --page: var(--color-maroon);
+  --text: var(--color-white);
+  --text-muted: rgb(255 255 255 / 0.7);
+  --text-faint: rgb(255 255 255 / 0.5);
+  --accent: var(--color-yellow);
+  --focus: var(--color-yellow);
+  --surface: rgb(255 255 255 / 0.1);
+  --surface-strong: rgb(255 255 255 / 0.2);
+  --line: rgb(255 255 255 / 0.5);
+  --control: rgb(255 255 255 / 0.2);
+  --on-control: var(--color-white);
+  --arrow: var(--color-white);
+  --on-arrow: var(--color-maroon);
+  --button: var(--color-white);
+  --on-button: var(--color-wine);
+  --switch-track: rgb(255 255 255 / 0.2);
+  --switch-knob: var(--color-white);
+  --banner: rgb(0 0 0 / 0.35);
+  --answer: var(--mono-700);
 }

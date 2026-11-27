@@ -17,8 +17,10 @@
   cursor: pointer;
 }
 
-.light {
-  background: var(--color-white);
+/* Blanc en thème sombre, bordeaux en thème clair */
+.secondary {
+  background: var(--button);
+  color: var(--on-button);
 }
 
 .primary {

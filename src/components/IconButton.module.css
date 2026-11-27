@@ -8,8 +8,8 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: var(--surface-strong);
-  color: var(--color-white);
+  background: var(--control);
+  color: var(--on-control);
   cursor: pointer;
 }
 

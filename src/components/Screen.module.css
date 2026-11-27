@@ -6,12 +6,22 @@
   overflow-x: clip; /* rien ne dépasse sur les côtés, sans bloquer le pied de page collant */
 }
 
-/* Le fond reste fixe pendant le défilement, y compris sur iPhone */
+/* Le fond reste fixe pendant le défilement, y compris sur iPhone.
+   Thème clair (maquette V5) : le motif rose à 20 % sur crème.
+   CSS ne sait pas rendre une image transparente : un voile crème à 80 % donne le même résultat. */
 .screen::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
+  background:
+    linear-gradient(rgb(249 245 241 / 0.8), rgb(249 245 241 / 0.8)),
+    url('../assets/pattern-light.png') center / cover,
+    var(--page);
+}
+
+/* Thème sombre : le motif rouge sur bordeaux, sous un voile */
+:global(:root[data-theme='dark']) .screen::before {
   background:
     linear-gradient(rgb(87 5 14 / 0.5), rgb(87 5 14 / 0.5)),
     url('../assets/pattern.png') center / cover,
@@ -49,7 +59,7 @@
   margin-bottom: -8px;
   padding: 4px 14px;
   border-radius: 100px;
-  background: rgb(0 0 0 / 0.35);
+  background: var(--banner);
   color: var(--color-yellow);
   font-size: var(--text-tiny);
   font-weight: 700;

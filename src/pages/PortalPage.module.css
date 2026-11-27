@@ -5,7 +5,7 @@
 }
 
 .logo {
-  color: var(--color-yellow);
+  color: var(--accent);
 }
 
 .intro {
@@ -30,7 +30,7 @@
 }
 
 .warning h3 {
-  color: var(--color-yellow);
+  color: var(--accent);
 }
 
 .check {
@@ -45,7 +45,7 @@
   width: 24px;
   height: 24px;
   margin: 0;
-  accent-color: var(--color-yellow);
+  accent-color: var(--accent);
 }
 
 .note {

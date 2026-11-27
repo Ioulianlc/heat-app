@@ -17,6 +17,7 @@
   padding: 28px 22px;
   border: 1px solid transparent;
   border-radius: var(--radius);
+  color: var(--color-white); /* l'enveloppe reste bordeaux dans les deux thèmes */
   background:
     linear-gradient(var(--color-wine), var(--color-wine)) padding-box,
     linear-gradient(135deg, var(--color-yellow), var(--color-wine) 34%, var(--color-wine) 63%, var(--color-yellow)) border-box;
@@ -63,7 +64,7 @@
   padding: 12px 14px;
   border-radius: var(--radius);
   background: var(--surface);
-  color: var(--color-yellow);
+  color: var(--accent);
   font-size: 1.125rem;
   line-height: 1.3;
   counter-increment: question;
@@ -72,7 +73,7 @@
 .questions li::before {
   content: counter(question);
   flex: none;
-  color: var(--color-white);
+  color: var(--text);
   font-family: var(--font-title);
   font-size: var(--text-label);
   line-height: 1;
@@ -86,10 +87,10 @@
   align-self: center;
   min-height: 40px;
   padding: 6px 16px;
-  border: 1px solid var(--color-yellow);
+  border: 1px solid var(--accent);
   border-radius: var(--radius);
   background: none;
-  color: var(--color-yellow);
+  color: var(--accent);
   font-size: var(--text-small);
   cursor: pointer;
 }

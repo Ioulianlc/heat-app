@@ -1,40 +1,167 @@
-.block {
+/* Maquette V5 « How to play ». Les cases gardent leurs couleurs dans les deux thèmes :
+   seuls le fond de l'écran et les titres de section changent. */
+.section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  border-radius: var(--radius);
-  background: var(--surface);
+  gap: 20px;
 }
 
-.block h2 {
+.title {
   font-size: var(--text-label);
   letter-spacing: -0.02em;
-  line-height: 1.2;
 }
 
-.warning h2 {
-  color: var(--color-yellow);
+/* Une case bordeaux par étape */
+.steps,
+.notes {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .steps {
+  gap: 20px;
+  counter-reset: step;
+}
+
+.notes {
+  gap: var(--gap);
+}
+
+.steps li,
+.notes li {
+  position: relative;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  background: var(--color-maroon);
+  color: var(--color-white);
+}
+
+.steps li {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 0;
-  padding-left: 1.2em;
+  align-items: center;
+  min-height: 64px;
+  padding-left: 32px;
+  counter-increment: step;
 }
 
-.traps {
-  margin: 0;
+/* La pastille jaune numérotée, à cheval sur le coin de la case */
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  top: -10px;
+  left: -8px;
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: var(--color-yellow);
+  color: var(--color-maroon);
+  font-family: var(--font-title);
+  font-size: var(--text-body);
+  line-height: 1;
 }
 
-.traps dt {
-  margin-top: 8px;
+.notes strong {
   color: var(--color-yellow);
   font-weight: 700;
 }
 
-.traps dd {
+/* Les deux cases « Wrong answer » / « Right answer » */
+.outcomes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.outcome {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 115px;
+  padding: 10px;
+  border-radius: var(--radius);
+  color: var(--color-white);
+  font-size: var(--text-small);
+  line-height: 1.3;
+}
+
+.wrong {
+  background: var(--color-red);
+}
+
+.right {
+  background: var(--color-green);
+}
+
+/* Titre en Red Hat Display, comme dans la maquette (pas en Bebas Neue) */
+.outcomeTitle {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* Les cartes pièges en miniature, avec les ornements des cartes du jeu */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
   margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  aspect-ratio: 184 / 262;
+  /* En pixels : une marge en % se calcule sur la largeur de la grille, pas sur celle de la carte */
+  padding: 48px 22px 52px;
+  border-radius: 5px;
+  /* Les coins sans le mot HEAT, comme les cartes de la maquette V5 */
+  background:
+    url('../assets/card-corners-top.svg') top center / 100% auto no-repeat,
+    url('../assets/card-trap-sides.svg') center / 100% auto no-repeat,
+    url('../assets/card-front-bottom.svg') bottom center / 100% auto no-repeat,
+    var(--color-maroon);
+  color: var(--color-yellow);
+  text-align: center;
+}
+
+/* La 3e carte, seule sur sa ligne, se centre */
+.card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - 3px);
+}
+
+.cardTitle {
+  font-size: 1.8rem;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.cardText {
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+/* L'avertissement 18+ : une case rouge, comme « Wrong answer » */
+.warning {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--color-red);
+  color: var(--color-white);
+  font-size: var(--text-small);
+  line-height: 1.35;
 }

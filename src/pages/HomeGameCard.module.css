@@ -61,7 +61,7 @@
 }
 
 .stretch:focus-visible::after {
-  outline: 3px solid var(--color-yellow);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 

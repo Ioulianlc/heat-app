@@ -10,7 +10,7 @@ import { listGames } from '../lib/games'
 import { setPreference, usePreferences, type Preferences } from '../lib/preferences'
 import styles from './ProfilePage.module.css'
 
-// Les 3 interrupteurs de la maquette V4
+// Les 3 interrupteurs de la maquette V4, plus le thème (maquette V5)
 const PREFERENCES: { key: keyof Preferences; label: string; description: string }[] = [
   {
     key: 'voiceOver',
@@ -23,6 +23,11 @@ const PREFERENCES: { key: keyof Preferences; label: string; description: string 
     description: 'Card flips, timer, right and wrong.',
   },
   { key: 'vibrations', label: 'Vibrations', description: 'The phone vibrates on a wrong answer.' },
+  {
+    key: 'darkMode',
+    label: 'Dark mode',
+    description: 'A dark background, easier on the eyes in a dim room.',
+  },
 ]
 
 // Profil (maquette V4 « iPhone 17 - 11 ») : statistiques, règles, préférences

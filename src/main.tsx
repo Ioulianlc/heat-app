@@ -7,6 +7,8 @@ import '@fontsource-variable/red-hat-display/wght.css'
 import './styles/tokens.css'
 import './styles/base.css'
 import App from './App.tsx'
+import { getPreferences } from './lib/preferences'
+import { applyTheme } from './lib/theme'
 
 // Mode hors ligne : le service worker garde l'app sur le téléphone (version publiée seulement,
 // pas pendant « npm run dev » où il gênerait le rechargement automatique)
@@ -15,6 +17,9 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => undefined)
   })
 }
+
+// Le thème est déjà posé par index.html ; on le confirme ici (utile pendant « npm run dev »)
+applyTheme(getPreferences().darkMode)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

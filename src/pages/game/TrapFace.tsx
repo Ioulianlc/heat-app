@@ -1,18 +1,6 @@
+import { trapCard } from '../../game/trapCards'
 import type { Trap } from '../../game/types'
 import styles from './TrapFace.module.css'
-
-// Le texte des cartes pièges, repris de la maquette V4
-function trapCard(trap: Trap, answerer: string) {
-  if (trap === 'double')
-    return { title: 'X2', text: 'Draw a new card, the sauce is now 2x spicier!' }
-  if (trap === 'substitution') {
-    return {
-      title: 'Substitution',
-      text: 'Draw a new card, the person on your right answers for you. You bet!',
-    }
-  }
-  return { title: 'Forced', text: `The person to ${answerer}’s left is betting in their place` }
-}
 
 type TrapFaceProps = {
   trap: Trap

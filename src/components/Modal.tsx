@@ -23,6 +23,7 @@ function Modal({ labelledBy, onClose, dismissible = false, tone = 'wine', childr
     <dialog
       ref={dialogRef}
       className={`${styles.dialog} ${styles[tone]}`}
+      data-surface="dark" // fond bordeaux dans les deux thèmes (voir tokens.css)
       aria-labelledby={labelledBy}
       onClose={onClose}
       onClick={(event) => dismissible && event.target === event.currentTarget && onClose()}

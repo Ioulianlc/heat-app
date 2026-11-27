@@ -30,7 +30,7 @@
   width: clamp(140px, 55%, 192px);
 }
 
-/* Les ronds blancs de la maquette */
+/* Les ronds de la maquette : blancs en thème sombre, bordeaux en thème clair */
 .arrow {
   position: relative;
   display: grid;
@@ -41,8 +41,8 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: var(--color-white);
-  color: var(--color-maroon);
+  background: var(--arrow);
+  color: var(--on-arrow);
   cursor: pointer;
 }
 
